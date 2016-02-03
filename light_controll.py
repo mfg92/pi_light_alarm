@@ -40,7 +40,7 @@ class LightControll:
         self.ctrl_events = []
 
         IO.wiringPiSetupGpio()
-        IO.pinMode(self.light_pin,IO.GPIO.PWM_OUTPUT)
+        IO.pinMode(self.light_pin, IO.GPIO.PWM_OUTPUT)
         IO.pwmSetClock(1920)
         IO.pwmSetRange(100)
         # GPIO.setup(self.light_pin, GPIO.OUT)
@@ -83,6 +83,7 @@ class LightControll:
                 event.on_finished(self)
                 continue
             elif event.start_time > now:
+                self._set_brightness(0.0)
                 continue
 
             self._set_brightness(event.calc_brightness())

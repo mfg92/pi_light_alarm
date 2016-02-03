@@ -72,6 +72,7 @@ class LightControll:
                 continue  # break if exit flag is set
 
             if not self.ctrl_events:
+                self._set_brightness(0.0)
                 continue
 
             now = datetime.datetime.now()

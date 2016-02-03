@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" >
+  <head>
+    <title>LightClock - Manager</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+    <link rel="stylesheet" href="./bower_components/angular-material/angular-material.css"/>
+    <link rel="stylesheet" href="assets/app.css"/>
+
+    <style type="text/css">
+        /**
+         * Hide when Angular is not yet loaded and initialized
+         */
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+          display: none !important;
+        }
+    </style>
+
+  </head>
+
+  <body ng-app="alarmApp" layout="row" ng-controller="AlarmController as ul" ng-cloak >
+
+  <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2"
+                md-component-id="left"
+                md-is-locked-open="$mdMedia('gt-sm')">
+
+    <md-toolbar class="md-whiteframe-z1">
+      <h1>Alarms</h1>
+    </md-toolbar>
+
+    <md-list>
+      <md-list-item ng-repeat="it in ul.alarms">
+          <md-button ng-click="ul.selectAlarm(it)" ng-class="{'selected' : it === ul.selected }">
+            {{ul.getTimeString(it)}}
+          </md-button>
+      </md-list-item>
+
+
+      <md-list-item>
+          <md-button class="" ng-click="ul.addAlarm()">
+            <md-tooltip>Add new Alarm</md-tooltip>
+            <md-icon md-svg-icon="add"></md-icon>
+          </md-button>
+      </md-list-item>
+
+    </md-list>
+
+  </md-sidenav>
+
+
+  <div flex layout="column" tabIndex="-1" role="main" class="md-whiteframe-z2">
+
+    <md-toolbar layout="row" class="md-whiteframe-z1">
+      <md-button class="menu" hide-gt-sm ng-click="ul.toggleList()">
+        <md-icon md-svg-icon="menu" ></md-icon>
+      </md-button>
+      <h1>Alarm - Details</h1>
+    </md-toolbar>
+
+    <md-content flex id="content">
+      <div ng-hide="ul.selected">
+        <b>No Alarms yet!</b>
+      </div>
+
+      <div ng-show="ul.selected">
+        <md-input-container class="md-block">
+          <label>Name</label>
+          <input name="alarmName" ng-model="ul.selected.name" required ng-maxlength=32>
+        </md-input-container>
+
+          <md-input-container class="md-block">
+            <label>Enabled</label>
+            <md-switch ng-model="ul.selected.enabled">
+            </md-switch>
+          </md-input-container>
+
+           <div layout-gt-sm="row">
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Alarm hour</label>
+              <input name="alarmHours" ng-model="ul.selected.alarm_hour" required min="0" max="23" type="number">
+            </md-input-container>
+
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Alarm minute</label>
+              <input name="alarmMinutes" ng-model="ul.selected.alarm_min" required min="0" max="59" type="number">
+            </md-input-container>
+          </div>
+
+          <md-input-container class="md-block">
+            <label>Light offset (minutes)</label>
+            <input name="alarmLightOffset" ng-model="ul.selected.light_offset" required min="0" max="180" type="number">
+          </md-input-container>
+
+
+          <md-button md-no-ink ng-click="ul.removeAlarm(ul.selected)">
+            <md-tooltip>Delete Alarm</md-tooltip>
+            <md-icon md-svg-icon="delete"></md-icon>
+          </md-button>
+
+          <md-button md-no-ink ng-click="ul.updateAlarm(ul.selected)">
+            <md-tooltip>Update Alarm</md-tooltip>
+            <md-icon md-svg-icon="delete"></md-icon>
+          </md-button>
+        </div>
+
+      </md-content>
+
+  </div>
+
+    <script src="./bower_components/angular/angular.js"></script>
+    <script src="./bower_components/angular-animate/angular-animate.js"></script>
+    <script src="./bower_components/angular-aria/angular-aria.js"></script>
+    <script src="./bower_components/angular-material/angular-material.js"></script>
+    <script src="./bower_components/angular-resource/angular-resource.js"></script>
+
+    <script src="./src/alarm/Alarm.js"></script>
+    <script src="./src/alarm/AlarmController.js"></script>
+    <script src="./src/alarm/AlarmService.js"></script>
+
+    <script type="text/javascript">
+
+          angular
+              .module('alarmApp', ['ngMaterial', 'alarm'])
+              .config(function($mdThemingProvider, $mdIconProvider){
+
+                  $mdIconProvider
+                      .defaultIconSet("./assets/svg/avatars.svg", 128)
+                      .icon("menu"       , "./assets/svg/menu.svg"        , 24)
+                      .icon("delete"     , "./assets/svg/ic_remove_circle_outline_black_24px.svg"       , 48)
+                      .icon("add"        , "./assets/svg/ic_alarm_add_black_24px.svg");
+
+                      $mdThemingProvider.theme('default')
+                        .primaryPalette('blue')
+                        .accentPalette('light-blue');
+
+              });
+
+    </script>
+
+  </body>
+</html>

@@ -59,6 +59,10 @@
       <md-button class="menu" hide-gt-sm ng-click="ul.toggleList()">
         <md-icon md-svg-icon="menu" ></md-icon>
       </md-button>
+      <md-button class="menu" hide-gt-sm ng-click="ul.toggleLight()">
+        <md-icon md-svg-icon="light" ></md-icon>
+        {{ul.light_on}}
+      </md-button>
       <h1>Alarm - Details</h1>
     </md-toolbar>
 
@@ -104,7 +108,7 @@
 
           <md-button md-no-ink ng-click="ul.updateAlarm(ul.selected)">
             <md-tooltip>Update Alarm</md-tooltip>
-            <md-icon md-svg-icon="delete"></md-icon>
+            <md-icon md-svg-icon="save"></md-icon>
           </md-button>
         </div>
 
@@ -131,8 +135,10 @@
                   $mdIconProvider
                       .defaultIconSet("./assets/svg/avatars.svg", 128)
                       .icon("menu"       , "./assets/svg/menu.svg"        , 24)
+                      .icon("light"      , "./assets/svg/ic_lightbulb_outline_white_24px.svg")
                       .icon("delete"     , "./assets/svg/ic_remove_circle_outline_black_24px.svg"       , 48)
-                      .icon("add"        , "./assets/svg/ic_alarm_add_black_24px.svg");
+                      .icon("add"        , "./assets/svg/ic_alarm_add_black_24px.svg")
+                      .icon("save"       , "./assets/svg/ic_save_black_24px.svg");
 
                       $mdThemingProvider.theme('default')
                         .primaryPalette('blue')

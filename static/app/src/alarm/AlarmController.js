@@ -3,7 +3,7 @@
   angular
        .module('alarm')
        .controller('AlarmController', [
-          'alarmService', '$mdSidenav', '$mdBottomSheet', '$log', '$q',
+          'alarmService', '$mdSidenav', '$mdBottomSheet', '$log', '$q', '$http',
           AlarmController
        ]);
 
@@ -14,9 +14,10 @@
    * @param avatarsService
    * @constructor
    */
-  function AlarmController( alarmService, $mdSidenav, $mdBottomSheet, $log, $q) {
+  function AlarmController( alarmService, $mdSidenav, $mdBottomSheet, $log, $q, $http) {
     var self = this;
 
+    self.light_on = "AUTO";
     self.alarmService = alarmService;
     self.selected     = null;
     self.alarms       = [ ];
@@ -25,6 +26,7 @@
     self.removeAlarm  = removeAlarm;
     self.updateAlarm  = updateAlarm;
     self.toggleList   = toggleAlarmList;
+    self.toggleLight  = toggleLight;
     self.getTimeString= getTimeString;
     self.showContactOptions  = showContactOptions;
 
@@ -110,6 +112,36 @@
      self.alarmService.delete({id: alarm["id"]});
      getAlarms();
     }
+
+
+    function toggleLight() {
+      console.log("toggleLight");
+      datat = {};
+      if(self.light_on == "ON"){ // make off
+        datat = {"brightness": 0.0, "duration": 3*60*60};
+        self.light_on = "OFF";
+      }else if( self.light_on == "OFF"){ // make alarm mode
+        datat = {"brightness": 0.0, "duration": 0};
+        self.light_on = "AUTO";
+      }else{ // make on
+        datat = {"brightness": 1.0, "duration": 3*60*60};
+        self.light_on = "ON";
+      }
+
+      // Simple GET request example:
+      $http({
+        method: 'PUT',
+        url: '/api/v1/light/',
+        data: datat
+      }).then(function successCallback(response) {
+          // this callback will be called asynchronously
+          // when the response is available
+        }, function errorCallback(response) {
+          // called asynchronously if an error occurs
+          // or server returns response with an error status.
+        });
+    }
+
 
     function getTimeString(alarm){
       var h = alarm["alarm_hour"];

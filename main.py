@@ -32,6 +32,10 @@ def _run_on_start():
     app.lctrl = light_controll.LightControll()
     app.lctrl.start()
 
+    app.manual_ctrl_event = light_controll.ControllEvent(start_dtime=0,
+                                                         end_dtime=0,
+                                                         repeate_delay=None)
+
     # load values from db into lctrl
     db = get_db()
     for id in db['alarms']:
@@ -79,9 +83,30 @@ def send_static_bower(path):
     return send_from_directory('static/bower_components/', path)
 
 
-@app.route('/api/v1/test')
+@app.route('/api/v1/test/')
 def test():
     return 'OK'
+
+
+@app.route('/api/v1/light/', methods=['GET'])
+def get_light():
+    return json.dumps({'brightness': app.lctrl.brightness})
+
+
+@app.route('/api/v1/light/', methods=['PUT'])
+def set_light():
+    brightness = float(request.json['brightness'])
+    duration = float(request.json['duration'])
+    try:
+        app.lctrl.remove_controll_event(app.manual_ctrl_event)
+    except:
+        pass
+    now = datetime.datetime.now()
+    app.manual_ctrl_event.start_dtime = datetime.datetime(year=datetime.MINYEAR, month=1, day=1)
+    app.manual_ctrl_event.end_dtime = now + datetime.timedelta(seconds=duration)
+    app.manual_ctrl_event.start_brightness = app.manual_ctrl_event.end_brightness = brightness
+    app.lctrl.add_controll_event(app.manual_ctrl_event)
+    return "OK"
 
 
 @app.route('/api/v1/alarms/', methods=['GET'])
